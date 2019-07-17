@@ -7,6 +7,7 @@ const dir_cwd = process.cwd();
 
 var absolute = false;
 var repeatc = "";
+var match = "";
 
 for(var i = 0;i < process.argv.length; i++){
 	if (process.argv[i][0] == '-') {
@@ -22,8 +23,17 @@ for(var i = 0;i < process.argv.length; i++){
 		}else if (process.argv[i][1] == 'h') {
 			console.log(`Usage: filename <option>
 -a\t\tabsolute path
+-h\t\thelp
+-m\t\tregular expression
 -r <string>\trepeat`);
 			return;
+		}else if (process.argv[i][1] == 'm') {
+			if (process.argv.length > i+1) {
+				match = process.argv[i+1];
+			}else{
+				console.log("error: no argument after -m");
+				return;
+			}
 		}
 	}
 }
@@ -33,12 +43,14 @@ function printAllFiles(dir, cnt) {
 	filenames.forEach((filename) => {
 		const fullPath = path.join(dir, filename);
 		const stats = fs.statSync(fullPath);
-		if (stats.isFile()) {
+		if (stats.isFile() && filename.match(match)) {
 			if (absolute)	console.log(fullPath);
 			else			console.log(repeatc.repeat(cnt) + filename);
 		}else if (stats.isDirectory()) {
-			if (absolute)	console.log(fullPath);
-			else			console.log(repeatc.repeat(cnt) + fullPath.replace(dir + '/', ''));
+			if (filename.match(match)) {
+				if (absolute)	console.log(fullPath);
+				else			console.log(repeatc.repeat(cnt) + fullPath.replace(dir + '/', ''));
+			}
 			printAllFiles(fullPath, cnt+1);
 		}
 	});
