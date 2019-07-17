@@ -11,8 +11,8 @@ $ npm link
 ```
 $ filename -h
 filename <option>
--a			absolute path
--h			help
--m			regular expression
+-a		absolute path
+-h		help
+-m		regular expression
 -r <string>	repeat
 ```
